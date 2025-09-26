@@ -1,0 +1,16 @@
+# Ignore the .idea folder (JetBrains IDE settings)
+.idea/
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore virtual environments
+venv/
+.env/
+
+# Ignore log files
+*.log
+
+# Ignore system files
+.DS_Store
