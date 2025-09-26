@@ -1,17 +1,39 @@
+#
+# Google API's/Securities to connect to GMAIL
 google-api-python-client
 google-auth
 google-auth-oauthlib
-keyring
+#
+#
+# Offline-first, Hybrid ML (Local to Cloud Later)
 transformers
 sentence-transformers
-faiss-cpu
 scikit-learn
+#
+#
+# macOS-first, Cross-platform later
+keyring
+plyer
+#
+#
+# Automation and Autofill
+playwright
+APScheduler
+#
+#
+# Backend/API and Data Storage
 fastapi
 pydantic
 sqlalchemy
-playwright
-APScheduler
-plyer
+#
+#
+# Productivity and Packaging
 python-dotenv
 loguru
 rich
+#
+#
+# Misc
+faiss-cpu
+
+
