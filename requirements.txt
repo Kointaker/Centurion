@@ -1,0 +1,17 @@
+google-api-python-client
+google-auth
+google-auth-oauthlib
+keyring
+transformers
+sentence-transformers
+faiss-cpu
+scikit-learn
+fastapi
+pydantic
+sqlalchemy
+playwright
+APScheduler
+plyer
+python-dotenv
+loguru
+rich
