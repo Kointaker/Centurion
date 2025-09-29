@@ -33,7 +33,20 @@ loguru
 rich
 #
 #
+# Testing
+pytest
+#
+#
 # Misc
 faiss-cpu
+#
+#
+#
+
+
+
+
+
+
 
 
