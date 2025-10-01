@@ -14,3 +14,12 @@ venv/
 
 # Ignore system files
 .DS_Store
+*.DS_Store
+
+# Ignore a build folder in any subdirectory
+**/build/
+
+# Ignore sensitive user tokens
+credentials.json
+token.json
+
