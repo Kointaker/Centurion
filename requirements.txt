@@ -39,6 +39,7 @@ pytest
 #
 # Misc
 faiss-cpu
+numpy
 #
 #
 #
