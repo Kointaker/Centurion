@@ -1,8 +1,10 @@
 #
-# Google API's/Securities to connect to GMAIL
+# Google API's/Securities to connect to <assistant-capability title='Gmail' userTypedQuery='GMAIL' />
 google-api-python-client
 google-auth
 google-auth-oauthlib
+google-auth-httplib2
+httplib2
 #
 #
 # Offline-first, Hybrid ML (Local to Cloud Later)
@@ -41,8 +43,12 @@ pytest
 faiss-cpu
 numpy
 #
+# Email parsing helpers
+html2text
+beautifulsoup4
 #
 #
+
 
 
 
