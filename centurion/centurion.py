@@ -15,6 +15,20 @@ from googleapiclient.errors import HttpError
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
+
+
+## Commands:
+# python centurion.py --code --window 30 (Search for verification codes from messages
+
+
+
+
+
+
+
+
+
+
 # ---------- Verification code helpers ----------
 
 CODE_PATTERNS = [
