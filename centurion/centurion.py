@@ -5,6 +5,7 @@ import base64
 import re
 import sys
 from typing import List, Optional, Tuple
+import tqdm
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
