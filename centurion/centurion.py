@@ -178,11 +178,21 @@ def main():
     Default: list labels
     Optional: --code [--window M] to search and display a verification code
     """
+    print("Welcome to Centurion! You may list labels or search for a verification code")
+    usr = input("""
+X - List Label
+Y - Search for code   
+          """).upper()
+
+
+
+
+
     parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
     parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
     parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
     args = parser.parse_args()
-
+    
     creds = None
     if os.path.exists("token.json"):
         creds = Credentials.from_authorized_user_file("token.json", SCOPES)
@@ -195,9 +205,18 @@ def main():
         with open("token.json", "w") as token:
             token.write(creds.to_json())
 
-    try:
+
+
+
+
+    if usr == "X":
         service = build_service(creds)
-        if args.code:
+        list_labels(service)
+
+    if usr == "Y":
+        try:
+
+            service = build_service(creds)
             res = search_recent_verification_code(service, window_minutes=args.window)
             tqdm.tqdm(range(int(1000)), ascii=True, ncols=47)
             
@@ -210,11 +229,11 @@ def main():
             print(f"From: {headers.get('from')}")
             print(f"Subject: {headers.get('subject')}")
             print(f"Date: {headers.get('date')}")
-        else:
-            list_labels(service)
 
-    except HttpError as error:
-        print(f"An error occurred: {error}")
+
+
+        except HttpError as error:
+            print(f"An error occurred: {error}")
 
 if __name__ == "__main__":
     main()
