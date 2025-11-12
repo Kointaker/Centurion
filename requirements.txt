@@ -42,6 +42,9 @@ pytest
 # Misc
 faiss-cpu
 numpy
+tqdm
+time
+sleep
 #
 # Email parsing helpers
 html2text

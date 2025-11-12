@@ -5,7 +5,8 @@ import base64
 import re
 import sys
 from typing import List, Optional, Tuple
-import tqdm
+from tqdm import tqdm
+from time import sleep
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -25,7 +26,10 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 
-
+#parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
+#parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
+#parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
+#args = parser.parse_args()
 
 
 
@@ -178,7 +182,10 @@ def main():
     Default: list labels
     Optional: --code [--window M] to search and display a verification code
     """
-    print("Welcome to Centurion! You may list labels or search for a verification code")
+    print("Booting Centurion:")
+    for i in tqdm(range(100)):
+        # do work
+        sleep(0.01)
     usr = input("""
 X - List Label
 Y - Search for code   
@@ -186,12 +193,6 @@ Y - Search for code
 
 
 
-
-
-    parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
-    parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
-    parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
-    args = parser.parse_args()
     
     creds = None
     if os.path.exists("token.json"):
@@ -215,10 +216,8 @@ Y - Search for code
 
     if usr == "Y":
         try:
-
             service = build_service(creds)
             res = search_recent_verification_code(service, window_minutes=args.window)
-            tqdm.tqdm(range(int(1000)), ascii=True, ncols=47)
             
             if not res:
                 print("No verification codes found in the recent window.")
