@@ -199,6 +199,8 @@ def main():
         service = build_service(creds)
         if args.code:
             res = search_recent_verification_code(service, window_minutes=args.window)
+            tqdm.tqdm(range(int(1000)), ascii=True, ncols=47)
+            
             if not res:
                 print("No verification codes found in the recent window.")
                 return
