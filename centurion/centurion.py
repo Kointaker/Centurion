@@ -187,8 +187,8 @@ def main():
         # do work
         sleep(0.01)
     usr = input("""
-X - List Label
-Y - Search for code   
+X - List Labels
+Y - Search for auth/verification codes  
           """).upper()
 
 
