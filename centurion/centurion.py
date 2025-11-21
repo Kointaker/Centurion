@@ -177,6 +177,32 @@ def list_labels(service):
     for label in labels:
         print(label["name"])
 
+def list_messages(creds):
+    try:
+        # Call the Gmail API
+        service = build("gmail", "v1", credentials=creds)
+        results = (
+            service.users().messages().list(userId="me", labelIds=["INBOX"]).execute()
+        )
+        messages = results.get("messages", [])
+
+        if not messages:
+            print("No messages found.")
+            return
+
+        print("Messages:")
+        for message in messages:
+            print(f'Message ID: {message["id"]}')
+            msg = (
+                service.users().messages().get(userId="me", id=message["id"]).execute()
+            )
+            print(f'  Subject: {msg["snippet"]}')
+
+    except HttpError as error:
+        # TODO(developer) - Handle errors from gmail API.
+        print(f"An error occurred: {error}")
+    
+
 def main():
     """
     Default: list labels
@@ -189,7 +215,9 @@ def main():
     usr = input("""
 X - List Labels
 Y - Search for auth/verification codes  
+Z - List Messages
           """).upper()
+    print("\n\n\n")
 
 
 
@@ -233,6 +261,17 @@ Y - Search for auth/verification codes
 
         except HttpError as error:
             print(f"An error occurred: {error}")
+    
+    if usr == "Z":
+        service = build_service(creds)
+        list_messages(creds)
+        #usrz = int(input("""
+#Which messages would you like to print:
+#1. Inbox
+#2. Spam
+#3. Trash
+                         
+#                         """))
 
 if __name__ == "__main__":
     main()
