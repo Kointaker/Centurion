@@ -8,24 +8,22 @@ from typing import List, Optional, Tuple
 from tqdm import tqdm
 from time import sleep
 
+# Gmail API modules
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+\
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 
-## Commands:
-# python centurion.py --code --window 30 (Search for verification codes from messages
 
 
-
-
-
+# Old Code (Ignore)
 #parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
 #parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
 #parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
@@ -34,8 +32,9 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 
-# ---------- Verification code helpers ----------
 
+# Pattern that Centurion will look for 
+# when searching for verification codes
 CODE_PATTERNS = [
     r"\b(\d{6})\b",
     r"\b(\d{7,8})\b",
@@ -45,6 +44,9 @@ CODE_PATTERNS = [
     r"otp[:\s-]+(\d{4,8})",
     r"security\s*code[:\s-]+(\d{6,8})",
 ]
+
+
+# Centurion Functions
 
 def gmail_search_messages(service, query: str, max_results: int = 20, label_ids: Optional[List[str]] = None) -> List[dict]:
     """Search Gmail messages via query; returns list of message metadata dicts with id."""
@@ -162,8 +164,6 @@ def search_recent_verification_code(service, window_minutes: int = 20) -> Option
             return (codes[0], headers)
     return None
 
-# ---------- Original boilerplate flow with CLI toggle ----------
-
 def build_service(creds):
     return build("gmail", "v1", credentials=creds)
 
@@ -191,13 +191,14 @@ def list_messages(creds):
             return
 
         print("Messages:")
-        for message in messages:
+        for message in messages[:15]:# <-----
+            # number in brackets = number of messages shown
             print(f'Message ID: {message["id"]}')
             msg = (
                 service.users().messages().get(userId="me", id=message["id"]).execute()
             )
             print(f'  Subject: {msg["snippet"]}')
-
+            print("")
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f"An error occurred: {error}")
