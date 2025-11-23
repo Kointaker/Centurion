@@ -15,7 +15,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-\
+# Import errors if any are because modules are in virtual environment and not the computer itself
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
@@ -23,11 +24,11 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 
 
-# Old Code (Ignore)
-#parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
-#parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
-#parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
-#args = parser.parse_args()
+
+parser = argparse.ArgumentParser(description="Gmail helper (labels + verification code search)")
+parser.add_argument("--code", action="store_true", help="Search for a recent verification code instead of listing labels")
+parser.add_argument("--window", type=int, default=20, help="Minutes to look back for the code (default: 20)")
+args = parser.parse_args()
 
 
 
@@ -177,21 +178,23 @@ def list_labels(service):
     for label in labels:
         print(label["name"])
 
-def list_messages(creds):
+def list_messages(creds, count, type):
     try:
         # Call the Gmail API
         service = build("gmail", "v1", credentials=creds)
         results = (
-            service.users().messages().list(userId="me", labelIds=["INBOX"]).execute()
-        )
+            service.users().messages().list(userId="me", labelIds=[type]).execute()
+        ) # LabelIds is the label that program will look in when listing messages
+          # type is the user inputted type of label that will be parsed
         messages = results.get("messages", [])
 
         if not messages:
             print("No messages found.")
+            print("")
             return
 
         print("Messages:")
-        for message in messages[:15]:# <-----
+        for message in messages[:count]:# <-----
             # number in brackets = number of messages shown
             print(f'Message ID: {message["id"]}')
             msg = (
@@ -203,6 +206,23 @@ def list_messages(creds):
         # TODO(developer) - Handle errors from gmail API.
         print(f"An error occurred: {error}")
     
+def inbox_choice(usrz):
+    # Parses usrz and returns inbox selection
+    if usrz == 1:
+        return "INBOX"
+    elif usrz == 2:
+        return "SPAM"
+    elif usrz == 3:
+        return "TRASH"
+    if usrz == 4:
+        return "SENT"
+    elif usrz == 5:
+        return "DRAFT"
+    elif usrz == 6:
+        return "UNREAD"
+    elif usrz == 7:
+        return "STARRED"
+
 
 def main():
     """
@@ -217,7 +237,8 @@ def main():
 X - List Labels
 Y - Search for auth/verification codes  
 Z - List Messages
-          """).upper()
+
+:: """).upper()
     print("\n\n\n")
 
 
@@ -264,15 +285,26 @@ Z - List Messages
             print(f"An error occurred: {error}")
     
     if usr == "Z":
+        # Needed parameters
+        usrx = int(input("How many messages would you like to see? "))
+        usrz = int(input("""
+Which messages would you like to print:
+1. Inbox
+2. Spam
+3. Trash
+4. Sent
+5. Draft
+6. Unread
+7. Starred                         
+:: """))
+        
+        # Gets the inbox choice ready for the list_messages function
+        type = inbox_choice(usrz)
+
+        # Service and function running
         service = build_service(creds)
-        list_messages(creds)
-        #usrz = int(input("""
-#Which messages would you like to print:
-#1. Inbox
-#2. Spam
-#3. Trash
-                         
-#                         """))
+        list_messages(creds, usrx, type)
+        
 
 if __name__ == "__main__":
     main()
