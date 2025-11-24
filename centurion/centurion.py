@@ -205,7 +205,20 @@ def list_messages(creds, count, type):
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
         print(f"An error occurred: {error}")
-    
+
+def query_search(service, user_id, keyword, amount) -> list[str]:
+    """
+    Return up to 500 Gmail message IDs containing the keyword (case-insensitive).
+    """
+    if not keyword:
+        raise ValueError("keyword must be a non-empty string")
+
+    # Gmail search is case-insensitive by default.
+    query = f'"{keyword}"'  # quote to match the phrase; remove quotes for token-based matching
+
+    resp = service.users().messages().list(userId=user_id, q=query, maxResults=amount).execute()
+    return [m["id"] for m in resp.get("messages", [])]
+
 def inbox_choice(usrz):
     # Parses usrz and returns inbox selection
     if usrz == 1:
@@ -234,13 +247,13 @@ def main():
         # do work
         sleep(0.01)
     usr = input("""
+W - Search messages using keyword
 X - List Labels
 Y - Search for auth/verification codes  
 Z - List Messages
 
 :: """).upper()
     print("\n\n\n")
-
 
 
     
@@ -256,8 +269,11 @@ Z - List Messages
         with open("token.json", "w") as token:
             token.write(creds.to_json())
 
-
-
+    if usr == "W":
+        service = build_service(creds)
+        keyword = input("Enter keyword to search by: ")
+        amt = int(input("How many messages to display? "))
+        query_search(service, "me", keyword, amt)
 
 
     if usr == "X":
