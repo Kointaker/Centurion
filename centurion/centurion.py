@@ -46,6 +46,20 @@ CODE_PATTERNS = [
     r"security\s*code[:\s-]+(\d{6,8})",
 ]
 
+# Patterns that Centurion will look for
+# when searching for promo codes
+PROMO_CODE_PATTERNS = [
+    r"\bpromo\s*code[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+    r"\bdiscount\s*code[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+    r"\buse\s*code[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+    r"\bapply\s*code[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+    r"\bcoupon\s*code[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+    r"\bcode[:\s-]+([A-Z0-9][A-Z0-9._\-]{3,49})\b",
+]
+
+
+
+
 
 # Centurion Functions
 
@@ -217,7 +231,20 @@ def query_search(service, user_id, keyword, amount) -> list[str]:
     query = f'"{keyword}"'  # quote to match the phrase; remove quotes for token-based matching
 
     resp = service.users().messages().list(userId=user_id, q=query, maxResults=amount).execute()
-    return [m["id"] for m in resp.get("messages", [])]
+    # Display messages even if caller doesn't use the return value
+    msgs = resp.get("messages", [])
+    if not msgs:
+        print("No messages found.")
+        return []
+
+    print("Messages:")
+    for m in msgs[:amount]:
+        print(f"Message ID: {m['id']}")
+        msg_full = service.users().messages().get(userId=user_id, id=m["id"]).execute()
+        print(f"  Subject: {msg_full.get('snippet','')}")
+        print("")
+    return [m["id"] for m in msgs]
+
 
 def inbox_choice(usrz):
     # Parses usrz and returns inbox selection
