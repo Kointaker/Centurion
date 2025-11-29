@@ -5,6 +5,8 @@ google-auth
 google-auth-oauthlib
 google-auth-httplib2
 httplib2
+email.message
+EmailMessage
 #
 #
 # Offline-first, Hybrid ML (Local to Cloud Later)
