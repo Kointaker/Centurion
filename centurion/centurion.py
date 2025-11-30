@@ -79,6 +79,7 @@ def main():
         # do work
         sleep(0.01)
     usr = input("""
+V - Draft new message
 W - Search messages using keyword
 X - List Labels
 Y - Search for auth/verification codes  
@@ -158,6 +159,7 @@ Which messages would you like to print:
 
         # Service and function running
         service = build_service(creds)
+        # extract_headers()
         list_messages(creds, usrx, type)
         
 

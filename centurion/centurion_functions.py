@@ -19,6 +19,15 @@ from googleapiclient.errors import HttpError
 from email.message import EmailMessage
 
 
+CODE_PATTERNS = [
+    r"\b(\d{6})\b",
+    r"\b(\d{7,8})\b",
+    r"code[:\s-]+(\d{6,8})",
+    r"verification\s*code[:\s-]+(\d{6,8})",
+    r"one[-\s]*time\s*password[:\s-]+(\d{6,8})",
+    r"otp[:\s-]+(\d{4,8})",
+    r"security\s*code[:\s-]+(\d{6,8})",
+]
 
 
 def gmail_search_messages(service, query: str, max_results: int = 20, label_ids: Optional[List[str]] = None) -> List[dict]:
@@ -168,11 +177,18 @@ def list_messages(creds, count, type):
         print("Messages:")
         for message in messages[:count]:# <-----
             # number in brackets = number of messages shown
-            print(f'Message ID: {message["id"]}')
             msg = (
-                service.users().messages().get(userId="me", id=message["id"]).execute()
+                service.users().messages().get(userId="me", id=message["id"], format="full").execute()
             )
-            print(f'  Subject: {msg["snippet"]}')
+            headers = {h["name"].lower(): h["value"] for h in msg.get("payload", {}).get("headers", [])}
+            date = headers.get("date", "")
+            from_ = headers.get("from", "")
+            subject = headers.get("subject", msg.get("snippet", ""))
+
+            print(f"From:   {from_}")
+            print(f'    Subject: {msg["snippet"]}')
+            print(f"Date:  {date}")
+            print(f'Message ID: {message["id"]}')
             print("")
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
@@ -180,27 +196,43 @@ def list_messages(creds, count, type):
 
 def query_search(service, user_id, keyword, amount) -> list[str]:
     """
-    Return up to 500 Gmail message IDs containing the keyword (case-insensitive).
+    Return up to `amount` Gmail message IDs containing the keyword (case-insensitive),
+    and print Date, From, Subject, and Message ID for each result.
     """
     if not keyword:
         raise ValueError("keyword must be a non-empty string")
 
-    # Gmail search is case-insensitive by default.
-    query = f'"{keyword}"'  # quote to match the phrase; remove quotes for token-based matching
+    # Gmail search is case-insensitive by default; quoting matches the phrase exactly
+    query = f'"{keyword}"'
 
+    # List messages that match the query
     resp = service.users().messages().list(userId=user_id, q=query, maxResults=amount).execute()
-    # Display messages even if caller doesn't use the return value
     msgs = resp.get("messages", [])
+
     if not msgs:
         print("No messages found.")
         return []
 
     print("Messages:")
     for m in msgs[:amount]:
+        # Fetch full message for headers
+        msg_full = service.users().messages().get(
+            userId=user_id,
+            id=m["id"],
+            format="full"
+        ).execute()
+
+        headers_map = {h["name"].lower(): h["value"] for h in msg_full.get("payload", {}).get("headers", [])}
+        date = headers_map.get("date", "")
+        from_ = headers_map.get("from", "")
+        subject = headers_map.get("subject", msg_full.get("snippet", ""))
+
         print(f"Message ID: {m['id']}")
-        msg_full = service.users().messages().get(userId=user_id, id=m["id"]).execute()
-        print(f"  Subject: {msg_full.get('snippet','')}")
+        print(f"Date:    {date}")
+        print(f"From:    {from_}")
+        print(f"Subject: {subject}")
         print("")
+
     return [m["id"] for m in msgs]
 
 def inbox_choice(usrz):
