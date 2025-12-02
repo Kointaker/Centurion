@@ -1,5 +1,7 @@
 # Centurion
-Email assistant app that can:
+My Captsone project for my computer science class
+
+Centurion is an email assistant app that as of now can:
 
 -Draft messages
 -Search messages using keywords
@@ -7,6 +9,6 @@ Email assistant app that can:
 -Search for auth/verification codes
 -List messages
 
-Centurion needs gmail access to:
+Centurion as of nowneeds gmail access to:
 -View your email messages and settings
 -Manage drafts and send emails
