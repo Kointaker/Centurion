@@ -155,9 +155,10 @@ def list_labels(service):
     if not labels:
         print("No labels found.")
         return
-    print("Labels:")
+    print("Labels: \n")
     for label in labels:
         print(label["name"])
+        print("----")
 
 def list_messages(creds, count, type):
     try:
@@ -184,11 +185,13 @@ def list_messages(creds, count, type):
             date = headers.get("date", "")
             from_ = headers.get("from", "")
             subject = headers.get("subject", msg.get("snippet", ""))
-
+            print(f"Message ID: {message["id"]}")
+            print(f"Date:   {date}")
             print(f"From:   {from_}")
-            print(f'    Subject: {msg["snippet"]}')
-            print(f"Date:  {date}")
-            print(f'Message ID: {message["id"]}')
+            print(f"Subject: {msg["snippet"]}")
+            
+            
+            
             print("")
     except HttpError as error:
         # TODO(developer) - Handle errors from gmail API.
