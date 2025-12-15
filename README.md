@@ -9,6 +9,7 @@ Centurion is an email assistant app that as of now can:
 -Search for auth/verification codes
 -List messages
 
-Centurion as of nowneeds gmail access to:
+Centurion as of now needs gmail access to:
+
 -View your email messages and settings
 -Manage drafts and send emails
