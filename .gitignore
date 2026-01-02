@@ -22,4 +22,5 @@ venv/
 # Ignore sensitive user tokens
 credentials.json
 token.json
+.centurion_planning/
 
